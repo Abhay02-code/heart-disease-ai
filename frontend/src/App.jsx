@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+const API_URL = "https://heart-disease-ai-7xux.onrender.com";
 
 const initialForm = {
   age: 50,
@@ -41,7 +41,7 @@ function App() {
     setResult(null);
 
     try {
-      const response = await fetch(`${API_URL}/predict`, {
+      const response = await fetch(API_URL + "/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -71,8 +71,10 @@ function App() {
 
       setResult(data);
     } catch (err) {
+      console.error(err);
+
       setError(
-        "Unable to connect to the prediction server. Make sure the FastAPI backend is running."
+        "Unable to connect to the prediction server. Please try again."
       );
     } finally {
       setLoading(false);
@@ -101,20 +103,18 @@ function App() {
           <form onSubmit={handleSubmit}>
             <div className="form-grid">
 
-              <div className="field">
+              <div className="form-group">
                 <label>Age</label>
                 <input
                   type="number"
                   name="age"
                   value={formData.age}
                   onChange={handleChange}
-                  min="1"
-                  max="120"
                   required
                 />
               </div>
 
-              <div className="field">
+              <div className="form-group">
                 <label>Sex</label>
                 <select
                   name="sex"
@@ -126,7 +126,7 @@ function App() {
                 </select>
               </div>
 
-              <div className="field">
+              <div className="form-group">
                 <label>Chest Pain Type</label>
                 <select
                   name="cp"
@@ -140,7 +140,7 @@ function App() {
                 </select>
               </div>
 
-              <div className="field">
+              <div className="form-group">
                 <label>Resting Blood Pressure</label>
                 <input
                   type="number"
@@ -151,7 +151,7 @@ function App() {
                 />
               </div>
 
-              <div className="field">
+              <div className="form-group">
                 <label>Cholesterol</label>
                 <input
                   type="number"
@@ -162,19 +162,19 @@ function App() {
                 />
               </div>
 
-              <div className="field">
+              <div className="form-group">
                 <label>Fasting Blood Sugar</label>
                 <select
                   name="fbs"
                   value={formData.fbs}
                   onChange={handleChange}
                 >
-                  <option value="0">≤ 120 mg/dl</option>
-                  <option value="1">&gt; 120 mg/dl</option>
+                  <option value="0">Normal</option>
+                  <option value="1">High</option>
                 </select>
               </div>
 
-              <div className="field">
+              <div className="form-group">
                 <label>Resting ECG</label>
                 <select
                   name="restecg"
@@ -187,7 +187,7 @@ function App() {
                 </select>
               </div>
 
-              <div className="field">
+              <div className="form-group">
                 <label>Maximum Heart Rate</label>
                 <input
                   type="number"
@@ -198,7 +198,7 @@ function App() {
                 />
               </div>
 
-              <div className="field">
+              <div className="form-group">
                 <label>Exercise Induced Angina</label>
                 <select
                   name="exang"
@@ -210,8 +210,8 @@ function App() {
                 </select>
               </div>
 
-              <div className="field">
-                <label>ST Depression (Oldpeak)</label>
+              <div className="form-group">
+                <label>Oldpeak</label>
                 <input
                   type="number"
                   step="0.1"
@@ -222,7 +222,7 @@ function App() {
                 />
               </div>
 
-              <div className="field">
+              <div className="form-group">
                 <label>Slope</label>
                 <select
                   name="slope"
@@ -235,7 +235,7 @@ function App() {
                 </select>
               </div>
 
-              <div className="field">
+              <div className="form-group">
                 <label>Number of Major Vessels (CA)</label>
                 <select
                   name="ca"
@@ -249,7 +249,7 @@ function App() {
                 </select>
               </div>
 
-              <div className="field">
+              <div className="form-group">
                 <label>Thalassemia</label>
                 <select
                   name="thal"
@@ -265,7 +265,11 @@ function App() {
             </div>
 
             <div className="buttons">
-              <button type="submit" className="predict-btn" disabled={loading}>
+              <button
+                type="submit"
+                className="predict-btn"
+                disabled={loading}
+              >
                 {loading ? "Predicting..." : "Predict Heart Disease"}
               </button>
 
@@ -294,14 +298,12 @@ function App() {
               <h2>{result.result}</h2>
 
               <p>
-                Prediction:
-                <strong> {result.prediction}</strong>
+                Prediction: <strong>{result.prediction}</strong>
               </p>
 
               <p>
-                Probability:
+                Probability:{" "}
                 <strong>
-                  {" "}
                   {(result.probability * 100).toFixed(2)}%
                 </strong>
               </p>
@@ -310,9 +312,10 @@ function App() {
         </section>
 
         <section className="disclaimer">
-          <strong>Disclaimer:</strong> This is an educational machine-learning
-          project and is not a clinically validated diagnostic system. It
-          should not be used as a substitute for professional medical advice.
+          <strong>Disclaimer:</strong> This is an educational
+          machine-learning project and is not a clinically validated
+          diagnostic system. It should not be used as a substitute for
+          professional medical advice.
         </section>
       </main>
     </div>
